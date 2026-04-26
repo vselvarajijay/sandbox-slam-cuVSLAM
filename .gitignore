@@ -1,0 +1,12 @@
+# Local clone of upstream (see scripts/clone_cuvslam.sh)
+/cuVSLAM/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Editor
+.idea/
+.vscode/
