@@ -10,3 +10,11 @@ __pycache__/
 # Editor
 .idea/
 .vscode/
+
+
+*.mp4
+
+# Accidental Isaac ROS clones (old prepare script with ISAAC_ROS_WS → repo root)
+/src/isaac_ros_common/
+/src/isaac_ros_nvblox/
+/src/isaac_ros_visual_slam/

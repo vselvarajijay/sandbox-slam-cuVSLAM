@@ -25,9 +25,10 @@ echo "Architecture: ${ARCH}"
 echo "Image: ${IMAGE_TAG} (CUDA 13 — matches DGX Spark system CUDA 13 / driver 580+)"
 echo "Mounting source: ${CUVSLAM_DIR} -> /cuvslam"
 
-# X11
+# X11 (DISPLAY may be unset in SSH/headless; nmerge is best-effort for GUI in container)
 XSOCK=/tmp/.X11-unix
 XAUTH=/tmp/.docker.xauth
+export DISPLAY="${DISPLAY:-}"
 touch "${XAUTH}"
 xauth nlist "${DISPLAY}" 2>/dev/null | sed -e 's/^..../ffff/' | xauth -f "${XAUTH}" nmerge - 2>/dev/null || true
 chmod 777 "${XAUTH}"

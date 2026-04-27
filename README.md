@@ -36,6 +36,16 @@ This repository wires up [nvidia-isaac/cuVSLAM](https://github.com/nvidia-isaac/
 
    (Requires an Intel RealSense and USB passthrough; the run script maps `/dev/bus/usb` and any `/dev/video*` nodes.)
 
+   **`scripts/run_kitti_e2e.sh`** uses real **`…/dataset/sequences/06`** when present; if not, it turns on the bundled **synthetic** `demo` and prints a short notice. For real roads, unpack [KITTI odometry](http://www.cvlibs.net/datasets/kitti/eval_odometry.php) to `…/06`. To run `track_kitti.py` **directly** (no e2e script) with only the synthetic bundle, set `KITTI_USE_SYNTHETIC_DEMO=1` — see `cuVSLAM/examples/kitti/README.md`.
+
+   ```bash
+   ./scripts/run_kitti_e2e.sh
+   # Dense SGBM map:  ./scripts/run_kitti_e2e.sh --dense
+   # Several sequences (one Rerun .rrd per sequence): ./scripts/run_kitti_e2e_batch.sh
+   ```
+
+   **TUM RGB-D (e.g. freiburg1/room + `fr1_room.rrd`):** `scripts/fetch_tum_fr1_room.sh`, then see `cuVSLAM/examples/tum/README.md`.
+
 **Compose** (optional):
 
 ```bash
@@ -44,6 +54,12 @@ docker compose run --rm cuvslam bash
 ```
 
 `docker-compose.yml` names the image `pycuvslam:realsense-cu13` and uses the same Dockerfile as the build script.
+
+## 3D mapping with nvblox (Isaac ROS, separate container)
+
+**nvblox** (TSDF / costmaps) and the ROS **cuVSLAM** node run in NVIDIA’s **Isaac ROS** dev environment, not inside `pycuvslam:realsense-cu13`. On DGX Spark, use `isaac_ros_common`’s **`scripts/run_dev.sh`** (present on **`release-3.2`**; not on `main` — see doc), then `ros2 launch nvblox_examples_bringup realsense_example.launch.py` (RealSense + VSLAM + nvblox). See [docs/ISAAC_ROS_NVBLOX_DGX.md](docs/ISAAC_ROS_NVBLOX_DGX.md) and `./scripts/prepare_isaac_nvblox_workspace.sh` to clone into **`~/isaac_ros_ws`** at **`ISAAC_ROS_GITREF=release-3.2`** by default (override with **`NVBLOX_ISAAC_WS`** / **`ISAAC_ROS_GITREF`**; **`ISAAC_NVBLOX_SYNC=1`** forces re-clone if you previously checked out **`main`**). The script does not use **`ISAAC_ROS_WS`** for the clone path. To measure topic **Hz** (real-time vs dropped), use **`./scripts/benchmark_nvblox_perf.sh`** (details in that doc section).
+
+On **DGX Spark**, if `run_dev.sh` fails with **`nvidia.com/pva=all`**, run **`./scripts/patch_isaac_run_dev_spark.sh`** (see doc).
 
 ## Image choice (why not CUDA 12?)
 
