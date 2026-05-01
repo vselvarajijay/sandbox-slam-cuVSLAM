@@ -8,6 +8,13 @@ TARGET="${1:-${ROOT_DIR}/cuVSLAM}"
 UPSTREAM="${CUVSLAM_UPSTREAM:-https://github.com/nvidia-isaac/cuVSLAM.git}"
 REF="${CUVSLAM_REF:-main}"
 
+if [[ -f "${TARGET}" ]]; then
+  echo "Error: ${TARGET} is a file, not a clone directory." >&2
+  echo "Usage: $(basename "$0") [DEST_DIR]   (default: ${ROOT_DIR}/cuVSLAM)" >&2
+  echo "Clone first, then run: ${ROOT_DIR}/scripts/run_cuvslam_docker.sh" >&2
+  exit 1
+fi
+
 if [[ -d "${TARGET}/.git" ]]; then
   echo "cuVSLAM already present at ${TARGET}. Pull latest with: (cd ${TARGET} && git pull && git lfs pull)"
   exit 0

@@ -63,6 +63,7 @@ docker run -it \
   -e QT_X11_NO_MITSHM=1 \
   -e _X11_NO_MITSHM=1 \
   -e _MITSHM=0 \
+  -e RERUN_SERVE_GRPC -e RERUN_GRPC_PORT -e RERUN_SERVE_GRPC_HINT_IP \
   -v "${XSOCK}":"${XSOCK}" \
   -v "${XAUTH}":"${XAUTH}" \
   -v "${CUVSLAM_DIR}":/cuvslam \

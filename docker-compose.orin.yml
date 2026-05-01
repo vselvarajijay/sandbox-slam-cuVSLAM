@@ -1,0 +1,29 @@
+# Jetson Orin (L4T): CUDA 12.6 + Ubuntu 22.04 — not CUDA 13 / DGX Spark.
+# Build: docker compose -f docker-compose.orin.yml build
+# Run:   docker compose -f docker-compose.orin.yml run --rm cuvslam bash
+services:
+  cuvslam:
+    image: pycuvslam:realsense-cu12
+    build:
+      context: ./cuVSLAM
+      dockerfile: docker/Dockerfile.realsense-cu12
+    privileged: true
+    network_mode: host
+    gpus: all
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_DISABLE_REQUIRE=${NVIDIA_DISABLE_REQUIRE:-1}
+      # Rerun serve_grpc → Mac viewer: set RERUN_SERVE_GRPC=1 (see README)
+      - RERUN_SERVE_GRPC=${RERUN_SERVE_GRPC:-}
+      - RERUN_GRPC_PORT=${RERUN_GRPC_PORT:-9876}
+      - RERUN_SERVE_GRPC_HINT_IP=${RERUN_SERVE_GRPC_HINT_IP:-}
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - ./cuVSLAM:/cuvslam
+      - ${DATASETS_DIR:-${HOME}/datasets}:${DATASETS_DIR:-${HOME}/datasets}
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev/bus/usb:/dev/bus/usb
+    working_dir: /cuvslam
+    stdin_open: true
+    tty: true
